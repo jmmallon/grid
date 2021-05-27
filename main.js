@@ -25,7 +25,7 @@ function shuffleArray(array) {
 
 // Dim the elements in the grid and rotate through them, brightening them one at a time
 
-async function flashGrid(array, loops, sound) {
+async function flashGrid(array, loops, sound, finish) {
 //Prepare to play the sound effect
 
     var audioElement = document.createElement('audio');
@@ -35,6 +35,15 @@ async function flashGrid(array, loops, sound) {
 // Randomize the order of the array elements
 
     newArray = shuffleArray(array);
+    var arrayLength = newArray.length;
+    var keep;
+    for (var i = 0; i < arrayLength; i++) {
+	var item = newArray[i];
+	if (item.firstChild.currentSrc.indexOf(finish) > -1) {
+            keep = item;
+            break;
+        }
+    }
 
 // Dim the elements
 
@@ -47,11 +56,12 @@ async function flashGrid(array, loops, sound) {
 // Rotate through the grid twice in the random order provided
 
     var lastItem;
-    var arrayLength = newArray.length;
     for (var j = 0; j < loops; j++) {
         for (var i = 0; i < arrayLength; i++) {
 
 // Dim the element previously brightened
+
+	    var item = newArray[i];
 
             if (lastItem) {
                 dim(lastItem);
@@ -59,19 +69,23 @@ async function flashGrid(array, loops, sound) {
 
 // Brighten the chosen element and set the previous element holder to this element
 
-            bright(newArray[i]);
-            lastItem = newArray[i];
+            bright(item);
+            lastItem = item;
 
 // Wait 200 ms between flashings
 
             await new Promise(r => setTimeout(r, 200));
         } 
     } 
+
+    dim(lastItem);
+    bright(keep);
+
     await new Promise(r => setTimeout(r, 700));
 
 // Return the last element
 
-    return lastItem;
+    return keep;
 }
 
 // Hide the big image and reset the grid elements to full brightness

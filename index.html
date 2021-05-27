@@ -17,7 +17,12 @@ let frames=16;
 
 // Randomize 3-digit numbers from 1 to the number of images into an array
 
-let images = shuffleArray(Array(pics).fill().map((element, index) => (index + 1).toLocaleString(undefined, {minimumIntegerDigits: 3})));
+let picsArray = Array(pics).fill().map((element, index) => (index + 1).toLocaleString(undefined, {minimumIntegerDigits: 3}));
+picsArray.splice(0, 8);
+console.log(picsArray);
+let images = shuffleArray(picsArray);
+
+let defaultImages = shuffleArray(Array('001', '002', '003', '004', '005', '006', '007', '008'));
 
 // next is the subscript of the next image name in the images array
 
@@ -39,9 +44,10 @@ function loadImages() {
 // Add an <img> to each one with the corresponding image from the array
 
 	for (var i = 0; i < arrayLength; i++) {
+		let imageNumber = (i % 2 == 1) ? images[i] : defaultImages[i/2];
             	emptyGrid[i].id = i;
 	    	var img = document.createElement("IMG");
-            	emptyGrid[i].appendChild(makeImgByNumber(images[i]));
+            	emptyGrid[i].appendChild(makeImgByNumber(imageNumber));
 	} 
 } 
 
@@ -53,7 +59,7 @@ function flashThisGrid(div) {
 
 // Flash the grid with the chosen sound effect and return the last image flashed
 
-	result = Promise.resolve(flashGrid(Array.from(grid), 2, sounds[soundChoice]));
+	result = Promise.resolve(flashGrid(Array.from(grid), 2, sounds[soundChoice], defaultImages[next - frames]));
 	result.then(function(value) {
 
 // Get the name of the chosen image
