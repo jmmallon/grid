@@ -15,7 +15,7 @@ function makeImgByUrl(urlArgument) {
 
 // Randomize the elements of the provided array
 
-function shuffleArray(array) {
+function shuffleArray (array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -34,7 +34,9 @@ async function flashGrid(array, loops, sound, finish) {
 
 // Randomize the order of the array elements
 
+console.log(array);
     newArray = shuffleArray(array);
+console.log(newArray);
     var arrayLength = newArray.length;
     var keep;
     for (var i = 0; i < arrayLength; i++) {
@@ -88,17 +90,43 @@ async function flashGrid(array, loops, sound, finish) {
     return keep;
 }
 
-// Hide the big image and reset the grid elements to full brightness
+
+// Hide the big image and reset the grid elements to full brightness, except for the ones that have been chosen
 
 function resetGrid() {
+// Hide the big image
+
 	var big = document.getElementById("big");
 	big.replaceChild(makeImgByUrl(""), big.firstChild);
     	big.style.zIndex = -99;
 
+// Get the list of items that have already been chosen
+
+//	var picked = picsArray.slice(0, chosen);
+
+// Iterate through the grid, brightening only those items that have not been chosen
+
 	var emptyGrid = document.getElementsByClassName("item");
 	var emptyGridArray = Array.from(emptyGrid);
-	emptyGridArray.forEach(bright);
-} 
+    	emptyGridArray.forEach(bright);
+/*
+    	var arrayLength = emptyGridArray.length;
+    	for (var i = 0; i < arrayLength; i++) {
+		var item = emptyGridArray[i];
+
+// Get the source number of the image
+
+		var src = /(...).jpg/.exec(item.firstChild.currentSrc);
+		var match = src[1];
+
+// Check whether it's in the list of items that have already been chosen - if not, brighten
+
+		if (! picked.includes(match)) {
+			bright(item);
+        	}
+        }
+*/
+}
 
 async function sleep(howLong) {
 	await new Promise(r => setTimeout(r, howLong));

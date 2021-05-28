@@ -5,28 +5,51 @@
 <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png">
 <link rel="icon" href="/favicons/favicon.ico" type="image/x-icon"/>
 <link rel="manifest" href="/favicons/site.webmanifest">
-        <link rel="stylesheet" href="main.css?s=87835" type="text/css" />
-	<script type="text/javascript" src="main.js?s=88437"></script>
+        <link rel="stylesheet" href="main.css?s=87833" type="text/css" />
+	<script type="text/javascript" src="main.js?s=91237"></script>
 	<script type="text/javascript">
-// Number of images in images directory - each is named NNN.jpg, e.g., 001.jpg, 015.jpg, etc.
-
-let pics=27;
 
 // Number of frames in the grid
 let frames=16;
 
-// Randomize 3-digit numbers from 1 to the number of images into an array
+let picsArray = Array(
+'004',
+'008',
+'011',
+'006',
+'015',
+'018',
+'013',
+'024',
+'012',
+'001',
+'017',
+'014',
+'026',
+'009',
+'016',
+'019'
+);
 
-let picsArray = Array(pics).fill().map((element, index) => (index + 1).toLocaleString(undefined, {minimumIntegerDigits: 3}));
-picsArray.splice(0, 8);
-console.log(picsArray);
-let images = shuffleArray(picsArray);
+let images = shuffleArray(JSON.parse(JSON.stringify(picsArray)));
 
-let defaultImages = shuffleArray(Array('001', '002', '003', '004', '005', '006', '007', '008'));
+let replacement = shuffleArray(JSON.parse(JSON.stringify(Array(
+'002',
+'003',
+'005',
+'007',
+'010',
+'020',
+'021',
+'022',
+'023',
+'025',
+'027',
+))));
 
-// next is the subscript of the next image name in the images array
+// chosen is the subscript of the next image name to be chosen
 
-let next=frames;
+let chosen=0;
 
 // Array of sound effects to play during blinking
 
@@ -44,10 +67,9 @@ function loadImages() {
 // Add an <img> to each one with the corresponding image from the array
 
 	for (var i = 0; i < arrayLength; i++) {
-		let imageNumber = (i % 2 == 1) ? images[i] : defaultImages[i/2];
             	emptyGrid[i].id = i;
 	    	var img = document.createElement("IMG");
-            	emptyGrid[i].appendChild(makeImgByNumber(imageNumber));
+            	emptyGrid[i].appendChild(makeImgByNumber(images[i]));
 	} 
 } 
 
@@ -56,10 +78,8 @@ function loadImages() {
 function flashThisGrid(div) {
 	var grid = document.getElementsByClassName("item");
 	var soundChoice = Math.floor(Math.random() * sounds.length);
-
 // Flash the grid with the chosen sound effect and return the last image flashed
-
-	result = Promise.resolve(flashGrid(Array.from(grid), 2, sounds[soundChoice], defaultImages[next - frames]));
+	result = Promise.resolve(flashGrid(Array.from(grid), 2, sounds[soundChoice], picsArray[chosen]));
 	result.then(function(value) {
 
 // Get the name of the chosen image
@@ -72,11 +92,9 @@ function flashThisGrid(div) {
 		big.replaceChild(makeImgByUrl(imageUrl), big.firstChild);
     		big.style.zIndex = 99;
 
-// Replace the image in the chosen grid space with the next one in the images array
-
-		value.replaceChild(makeImgByNumber(images[next]), value.firstChild);
+		value.replaceChild(makeImgByNumber(replacement[chosen]), value.firstChild);
 		dim(value);
-		next = (next + 1 < pics) ? next + 1 : 0;
+                chosen = chosen + 1;
 	});
 }
 	</script>
